@@ -1,76 +1,62 @@
+import wbgapi as wb
 import pandas as pd
+import warnings
+import itertools
 import numpy as np
-from dataclasses import dataclass, field
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-from IPython.display import clear_output
+warnings.filterwarnings("ignore")
+from datetime import datetime
+from dataclasses import dataclass
+from sklearn.cluster import KMeans
+from tools import compute_score
 
-def feature_selection(df , feature_selected : list) -> pd.DataFrame :
-	return df[feature_selected].copy()
+QUERY_ID = ['EN.ATM.METH.EG.KT.CE']
 
-def plot_clusters(data, labels, centroids, iteration):
-	pca = PCA(n_components=2)
-	data_2d = pca.fit_transform(data)
-	centroids_2d = pca.transform(centroids.T)
-	clear_output(wait=True)
-	plt.title(f'Iteration {iteration}')
-	plt.scatter(x=data_2d[:,0], y=data_2d[:,1], c=labels)
-	plt.scatter(x=centroids_2d[:,0], y=centroids_2d[:,1])
-	plt.show()
-
-@dataclass
-class kmeans_model:
-	n_cluster : int
-	df : pd.DataFrame
-
-	def normalize_data (self) :
-		self.df = ((self.df - self.df.min()) / (self.df.max() - self.df.min())) * 10 + 1
-		print('describe', self.df.describe)
-
-	def initialize_centroids(self) :
-		centroids = []
-		for i in range(self.n_cluster):
-			centroid = self.df.apply(lambda x: float(x.sample()))
-			centroids.append(centroid)
-		return pd.concat(centroids, axis=1)
-
-	def get_labels(self, centroids):
-		distances = centroids.apply(lambda x: np.sqrt(((self.df - x) ** 2).sum(axis=1)))
-		labels = distances.idxmin(axis=1)
-		return labels
-
-	def find_new_centroids(self, labels):
-		centroids = self.df.groupby(labels).apply(lambda x: np.exp(np.log(x).mean())).T
-		return centroids
+PREDICTORS = ['GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)',
+ 			  'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 
+ 			  'AirTransport', 'note_year'
+ 			]
+CURRENT_YEAR_AVAILABLE = 2019
 
 
-def main() -> None :
-	players = pd.read_csv("players_22.csv")
-	features = ["overall", "potential", "wage_eur", "value_eur", "age"]
-	players = players.dropna(subset=features)
-	data = feature_selection(df = players, feature_selected = features)
+def kmeans_score(CountryAlphaCode, year, df):
+	if type(year) != int :
+		raise Exception('the year should be numerical value')
 
-	max_iterations = 100
-	centroid_count = 3
+	df = df[df['year'] == min(float(year), CURRENT_YEAR_AVAILABLE)]
+	df = df.dropna(subset=df.columns)
+	df = df.reset_index()
+	data = df[PREDICTORS].copy()
 
-	knn = knn_model(n_cluster = centroid_count, df = data)
-	knn.normalize_data()
+	#normalization
+	data = ((data - data.min()) / (data.max() - data.min())) * 3 + 1
+	kmeans = KMeans(4)
+	kmeans.fit(data)
+	labels = kmeans.labels_
+	labels = pd.DataFrame(labels, columns = ['labels'])
+	df = df.merge(labels, left_index=True, right_index=True)
+	df = compute_score(df, 'labels', 'GlobalMethane(ktco2)')
+	avg_by_cluster = df.groupby(['labels'], as_index=False).agg(
+                      {'GlobalMethane(ktco2)':['mean','std'], 'note_year':['first']})
 
-	centroids = knn.initialize_centroids()
-	old_centroids = pd.DataFrame()
-	iteration = 1
+	avg_by_cluster.columns = ['labels'] + ['_'.join(col) for col in avg_by_cluster.columns.values[1:]]
+	avg_by_cluster = avg_by_cluster.rename(columns={'GlobalMethane(ktco2)_mean' : 'Methane_emission_estimated',
+                               'GlobalMethane(ktco2)_std': 'uncertainty',
+                               'note_year_first': 'score_cluster'})
 
-	while iteration < max_iterations and not centroids.equals(old_centroids):
-		old_centroids = centroids
-		labels = knn.get_labels(centroids)
-		centroids = knn.find_new_centroids(labels)
-		# plot_clusters(data, labels, centroids, iteration)
-		iteration += 1
+	df = df.merge(avg_by_cluster, how='left', on='labels')
 
-	print(players[labels == 0][["short_name"] + features])
-	# print(centroids)
-if __name__ == "__main__":
-	main()
+	return df
+
+
+
+
+
+
+
+
+
+
+
 
 
 
