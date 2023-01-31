@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query
-from queryDataWBank import CountryEmission
+from computeInfoMethaneEmission import CountryEmission
 
 app = FastAPI()
 
@@ -11,7 +11,7 @@ async def emissions(
     year: int = Query(None, gt=2013, lt=2028)
 ):
     # retrieve methane emissions data for the given country and year
-    data = country_methane.getMethaneValue(iso_alpha2, year)
+    data = country_methane.getMethaneInfo(iso_alpha2, year)
     return {
         "methane_emissions": data['EmissionMethaneValue'],
         "is_estimated": data['is_estimated'],

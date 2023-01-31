@@ -86,6 +86,8 @@ world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year'] )
 
 print('format year done.....')
 
+world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']
+
 print('start writing to csv.....')
 world_methane_emission.to_csv('world_methane_emission.csv')
 print(' writing to csv done .....')
@@ -94,8 +96,8 @@ world_methane_emission = pd.read_csv('world_methane_emission.csv', index_col = F
 
 
 print(' start compute score country by year .....')
-# Ajout de la colonne furst_note pour la notation d'un payes par année (un classement)
-world_methane_emission = compute_score(world_methane_emission, 'year')
+# Ajout de la colonne first_note pour la notation d'un payes par année (un classement)
+world_methane_emission = compute_score(world_methane_emission, 'year', 'meth_valuebylandaera')
 print(' end compute score country by year .....')
 
 print(' start feature selection .....')

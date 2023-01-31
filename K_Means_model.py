@@ -34,7 +34,7 @@ def kmeans_score(CountryAlphaCode, year, df):
 	labels = kmeans.labels_
 	labels = pd.DataFrame(labels, columns = ['labels'])
 	df = df.merge(labels, left_index=True, right_index=True)
-	df = compute_score(df, 'labels', 'GlobalMethane(ktco2)')
+	df = compute_score(df, 'labels', 'meth_valuebylandaera')
 	avg_by_cluster = df.groupby(['labels'], as_index=False).agg(
                       {'GlobalMethane(ktco2)':['mean','std'], 'note_year':['first']})
 
