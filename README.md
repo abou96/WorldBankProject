@@ -4,7 +4,7 @@
 
 ### Data retrieval
 
-Ce projet commence par un script qui permet de récupérer les données sur l’emission de méthane de l’API World Bank. Les indicateurs utilisés sont  définis ci-dessous:
+Ce projet commence par un script ETLWORLDBANK.py qui permet de récupérer les données sur l’emission de méthane de l’API World Bank. Les indicateurs utilisés sont  définis ci-dessous:
 
 * NY.GDP.PCAP.CD GDP per capita (current US)
 * IS.AIR.DPRT Air transport, registered carrier departures worldwide
