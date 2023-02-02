@@ -53,8 +53,8 @@ FEATURES = [
 	'EG.USE.ELEC.KH.PC', 'AG.LND.TOTL.K2',
 	'EN.ATM.METH.AG.ZS','EN.ATM.METH.EG.KT.CE','EN.ATM.METH.EG.ZS', 
 	'EN.ATM.METH.KT.CE', 'EN.ATM.METH.ZG', 'EG.ELC.NGAS.ZS', 'EG.FEC.RNEW.ZS', 
-	'EG.USE.COMM.FO.ZS','EN.ATM.CO2E.KT', 'EG.USE.PCAP.KG.OE', 'EG.USE.CRNW.ZS'
-	]
+	'EG.USE.COMM.FO.ZS','EN.ATM.CO2E.KT', 'EG.USE.PCAP.KG.OE', 'EG.USE.CRNW.ZS', 'NY.GDP.MKTP.CD',
+	'SP.POP.TOTL']
 
 # features = ['EN.ATM.METH.KT.CE']
 print('starting request')
@@ -73,6 +73,9 @@ for dico in columns_rename_list:
 	dico_final.update(dico)
 
 dico_final.update({'time':'year'})
+dico_final.update({'NY.GDP.MKTP.CD':'GDP($)'})
+dico_final.update({'SP.POP.TOTL':'Population'})
+dico_final.update({'EN.POP.DNST':'Population density'})
 
 world_methane_emission = world_methane_emission.rename(columns = dico_final)
 
@@ -86,6 +89,9 @@ world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year'] )
 print('format year done.....')
 
 world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']
+world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['GDP($)']
+world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']
+world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']
 
 print('start writing to csv.....')
 world_methane_emission.to_csv('world_methane_emission.csv')
@@ -95,12 +101,18 @@ print(' writing to csv done .....')
 print(' start compute score country by year .....')
 # Ajout de la colonne first_note pour la notation d'un payes par année (un classement)
 world_methane_emission = compute_score(world_methane_emission, 'year', 'meth_valuebylandaera')
+world_methane_emission = compute_score(world_methane_emission, 'year', 'Emissions intensity')
+world_methane_emission = compute_score(world_methane_emission, 'year', 'Per capita emissions')
+world_methane_emission = compute_score(world_methane_emission, 'year', 'Per capita density emissions')
 print(' end compute score country by year .....')
 
 print(' start feature selection .....')
 
 #selection des features en fonctions des resultats de la correlation avec les valeurs d emission du methane
-predictors = ['GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)', 'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 'note_year']
+predictors = ['GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)', 
+'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 
+'note_year', 'meth_valuebylandaera', 'Emissions intensity',
+ 'Per capita emissions', 'Per capita density emissions']
 # predictors = ['GlobalMethane(ktco2)', 'CO2Emission(kt)', 'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 'note_year']
 feature_selected = ['economy', 'year'] + predictors
 
