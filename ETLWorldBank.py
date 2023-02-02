@@ -49,9 +49,8 @@ DICO_AGRICULTURE_METHANE = {
 DICO_AGRICULTURE_RELATED = {'AG.LND.TOTL.K2':'LandArea(count)' }
 
 FEATURES = [
-	'EN.ATM.METH.EG.ZS','EN.ATM.METH.ZG',
-	'EN.ATM.METH.AG.ZS', 'EN.ATM.METH.AG.KT.CE', 'IS.AIR.DPRT', 
-	'EG.USE.ELEC.KH.PC', 'AG.LND.TOTL.K2', 'EN.ATM.METH.AG.KT.CE',
+	'EN.ATM.METH.EG.ZS','EN.ATM.METH.ZG', 'EN.ATM.METH.AG.KT.CE', 'IS.AIR.DPRT', 
+	'EG.USE.ELEC.KH.PC', 'AG.LND.TOTL.K2',
 	'EN.ATM.METH.AG.ZS','EN.ATM.METH.EG.KT.CE','EN.ATM.METH.EG.ZS', 
 	'EN.ATM.METH.KT.CE', 'EN.ATM.METH.ZG', 'EG.ELC.NGAS.ZS', 'EG.FEC.RNEW.ZS', 
 	'EG.USE.COMM.FO.ZS','EN.ATM.CO2E.KT', 'EG.USE.PCAP.KG.OE', 'EG.USE.CRNW.ZS'
@@ -92,8 +91,6 @@ print('start writing to csv.....')
 world_methane_emission.to_csv('world_methane_emission.csv')
 print(' writing to csv done .....')
 
-world_methane_emission = pd.read_csv('world_methane_emission.csv', index_col = False)
-
 
 print(' start compute score country by year .....')
 # Ajout de la colonne first_note pour la notation d'un payes par année (un classement)
@@ -112,7 +109,7 @@ world_methane_emission = world_methane_emission[feature_selected]
 print(' end feature selection .....')
 
 print('start final writing to csv.....')
-world_methane_emission.to_csv('world_methane_emission_first_note.csv')
+world_methane_emission.to_csv('world_methane_emission_with_notebyyear.csv')
 print('end final writing to csv.....')
 
 print('done ETL.....')
