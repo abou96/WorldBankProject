@@ -36,7 +36,13 @@ Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La m�
 Le script  **HandlingMissingvalues** permet de faire ce traitement. 
 
 ### Methane emissions prediction:
-Pour la prediction des 10 derniers années: le fichier csv contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10. 
+Pour la prediction des 10 derniers années: le fichier csv **world_methane_emission_10y** contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10. 
+
+En ce qui concerne la prediction sur les 5 prochaines années. les données de world bank ne me permet pas de predire avec des modèles de ML correctement l'emission de méthane pour chaque pays.
+
+Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines emissions.
+
+Une tentative d'utilisation d'un modele de regression lineaire a été. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec données pour prédire celles la valeur d'emission de méthanes.
 
 
 ### Scoring methodology:
