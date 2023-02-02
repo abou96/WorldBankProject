@@ -4,7 +4,7 @@
 
 ### Data retrieval
 
-Ce projet commence par un script ETLWORLDBANK.py qui permet de récupérer les données sur l’emission de méthane de l’API World Bank. Les indicateurs utilisés sont  définis ci-dessous:
+Ce projet commence par un script **ETLWorldBank.py** qui permet de récupérer les données sur l’emission de méthane de l’API World Bank. Les indicateurs utilisés sont  définis ci-dessous:
 
 * NY.GDP.PCAP.CD GDP per capita (current US)
 * IS.AIR.DPRT Air transport, registered carrier departures worldwide
@@ -28,12 +28,15 @@ Pour estimer les valeurs d’emission de methane manquante. Trois méthode ont �
 - Methode KNNImputer: c’est un algorithme de remplacement de valeurs manquantes basé sur la méthode k plus proches voisins. Il utilise les valeurs des k observations les plus proches pour imputer une valeur manquante dans une colonne donnée. 
 - interpolation lineaire : une méthode utilisée pour compléter les valeurs manquantes dans une série chronologique en utilisant une ligne droite pour interpoler les valeurs manquantes entre les valeurs connues.
 
+Le script  **HandlingMissingvalues** permet d'appliquer ces méthodes. 
+
 ### Uncertainty computation :
 
 Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs nulles de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenu. Cette simulation est repetté plusieurs fois et au final l’incertitude est determiné par l’ecart-type de ces erreurs.
+Le script  **HandlingMissingvalues** permet de faire ce traitement. 
 
 ### Methane emissions prediction:
-Pour la prediction des 10 derniers années: le fichier csv contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10 
+Pour la prediction des 10 derniers années: le fichier csv contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10. 
 
 
 ### Scoring methodology:
@@ -41,6 +44,7 @@ Pour la prediction des 10 derniers années: le fichier csv contient les informat
 La méthode de scoring utilisé se divise en 2 étapes. Une premiere notation est effectué en se basant sur la distribution annuelle des valeurs d’emission de méthanes de tous les pays. Grace a la méthode min max scaler, on réduit l’échelle des emission sur une plage de 0 à 4.
 Ensuite pour affiner le score une note interne basé sur la méthode de clustering a été utilisé. Elle consiste à regrouper sur une année précise les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier. Enfin on peut calculer un score final qui sera la moyenne des deux scores,
 
+Les scripts   **ETLWorldBank.py** et **ComputeScoreKmeans** permettent de faire ce traitement. 
 ### REST API:
 
 Une fois les données complet, un restapi a été crée avec FastApi qui prend en entrée le code alpha2 et l’année et retourne :
@@ -51,4 +55,6 @@ Une fois les données complet, un restapi a été crée avec FastApi qui prend e
 - Le nom du pays (chaîne de caractères),
 - L’incertitude sur les émissions de méthane,
 - Le score / index pour ce pays.
+
+Les scripts   **main** et **ComputeInfoMethaneEmission** permettent de faire ce traitement. 
   
