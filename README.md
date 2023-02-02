@@ -1,37 +1,54 @@
 # WorldBankProject
 
+## Plan
 
-The test consists in recovering data on countries as provided by World Bank which is providing a REST API to obtain multiple information on countries (find the related information at https://datahelpdesk.worldbank.org/knowledgebase/articles/898581-api-basic-call-structures ).
-Many indicators on countries can be obtained as listed at: https://data.worldbank.org/indicator?tab=all
+### Data retrieval
 
-Among the different exposure to risk that can exist between different third-party companies, a specific one called ESG (standing for Environmental, Social, and Governance) is of particular interest for companies. To evaluate those, an overall score based on multiple features can be established. As an example, for the environmental score, methane production is one of these.  For this test we will focus on the variable called Methane emissions (kt of CO2 equivalent). This value can be obtained for most of the countries and for an extended period of time. This technical test consists in creating a RestAPI with a specific endpoint that will be able to return the Methane emissions for a country at a specific year.
+Ce projet commence par un script qui permet de récupérer les données sur l’emission de méthane de l’API World Bank. Les indicateurs utilisés sont  définis ci-dessous:
 
-Project to handle:
-Create a project on git containing your code that will:
-Recover the Methane emissions values for all countries and for all years,
-Give an estimate on the Methane emissions for countries where the information is missing and justify the approach used,
-Compute the uncertainty on your estimation when the value is missing,
-Obtain and estimate when possible the Methane emissions for the last 10 years in all countries,  
-Give an estimate of the Methane emissions for all countries for the next 5 years
-Provide a score related to the Methane emissions value in each country, justify the methodology used. The score should be an index going from 0 to 4, where 0 stands for a “good” environmental result and 10 for the ”worst” environmental result. 
+* NY.GDP.PCAP.CD GDP per capita (current US)
+* IS.AIR.DPRT Air transport, registered carrier departures worldwide
+* EG.USE.ELEC.KH.PC Electric power consumption (kWh per capita)
+* AG.LND.TOTL.K2 Land area (sq. km)
+* EN.ATM.METH.AG.KT.CE and EN.ATM.METH.AG.ZS : Agricultural methane emissions are emissions from animals, animal waste, rice production, agricultural waste burning (nonenergy, on-site), and savanna burning.
+* EN.ATM.METH.EG.KT.CE and EN.ATM.METH.EG.ZS : Methane emissions from energy processes are emissions from the production, handling, transmission, and combustion of fossil fuels and biofuels.
+* EN.ATM.METH.KT.CE and EN.ATM.METH.ZG: Methane emissions are those stemming from human activities such as agriculture and from industrial methane production.
+* EG.ELC.NGAS.ZS Electricity production from natural gas sources (% of total)
+* EG.FEC.RNEW.ZS Renewable energy consumption (% of total final energy consumption)
+* EG.USE.COMM.FO.ZS Fossil fuel energy consumption (% of total)
 
-When all these values will be obtained, create a RestAPI (preferably fastAPI) with an endpoint which could take as input:
-the iso alpha 2 code for a country, (must be provided)
-the year (should be defined in 2013-2028), (optional)
-And will return (in a json format):
-The Methane emissions value of the defined country at a specific year (float),
-The knowledge if the value is measured or estimated (boolean),
-The iso alpha 2 code of the country (string), 
-The country name (string),
-The uncertainty on the Methane emissions,
-The score/index for this country
-If you find any relevant information that could be added to the response, do not hesitate to add it.
+le module utilisé pour récupérer les données de WorldBankAPI s'appelle WBGAPI. Il fournit un accès moderne et pythonique à l'API de données de la Banque mondiale. Il est conçu à la fois pour les débutants en données et les types de scientifiques des données.
 
-Hint: to minimise the uncertainty on the imputed values, do not hesitate to consider other variables proposed by World Bank.
+Ensuite ces données sont complétés par une premiere notation annuelle des pays en fonction de leur emission rapporté a leur superficie. Le choix de ce ratio permet de noté chaque pays en fonction de ces caractéristiques propres. (Land area)
 
-When done, mail us the path to your git repo so we can have a first look at it before the next meeting where you will present your project in more detail.
-During our next meeting you will be asked to present the obtained results on three different countries (each one from a different continent) that you will have chosen.
+### Data estimation:
 
-If you have any question concerning the task, do not hesitate to come back to us,
+Pour estimer les valeurs d’emission de methane manquante. Trois méthode ont été proposé :
+- La méthode de rolling_statistical : Il s’agit de completer les valeurs via un 'SMA' : Simple Moving Average, 'WMA' : Weighted Moving Average ou 'EMA' : Exponential Moving Average
+- Methode KNNImputer: c’est un algorithme de remplacement de valeurs manquantes basé sur la méthode k plus proches voisins. Il utilise les valeurs des k observations les plus proches pour imputer une valeur manquante dans une colonne donnée. 
+- interpolation lineaire : une méthode utilisée pour compléter les valeurs manquantes dans une série chronologique en utilisant une ligne droite pour interpoler les valeurs manquantes entre les valeurs connues.
 
-Yours,
+### Uncertainty computation :
+
+Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs nulles de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenu. Cette simulation est repetté plusieurs fois et au final l’incertitude est determiné par l’ecart-type de ces erreurs.
+
+### Methane emissions prediction:
+Pour la prediction des 10 derniers années: le fichier csv contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10 
+
+
+### Scoring methodology:
+
+La méthode de scoring utilisé se divise en 2 étapes. Une premiere notation est effectué en se basant sur la distribution annuelle des valeurs d’emission de méthanes de tous les pays. Grace a la méthode min max scaler, on réduit l’échelle des emission sur une plage de 0 à 4.
+Ensuite pour affiner le score une note interne basé sur la méthode de clustering a été utilisé. Elle consiste à regrouper sur une année précise les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier. Enfin on peut calculer un score final qui sera la moyenne des deux scores,
+
+### REST API:
+
+Une fois les données complet, un restapi a été crée avec FastApi qui prend en entrée le code alpha2 et l’année et retourne :
+
+- La valeur des émissions de méthane du pays défini à une année spécifique (nombre flottant),
+- La connaissance si la valeur est mesurée ou estimée (booléen),
+- Le code iso alpha 2 du pays (chaîne de caractères),
+- Le nom du pays (chaîne de caractères),
+- L’incertitude sur les émissions de méthane,
+- Le score / index pour ce pays.
+  
