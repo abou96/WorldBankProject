@@ -28,7 +28,8 @@ Ensuite ces données sont complétés par une premiere notation annuelle des pay
 
 ### Data estimation:
 
-Pour estimer les valeurs d’emission de methane manquante. Trois méthode ont été proposé :
+
+Pour estimer les valeurs d’emission de methane manquante. Trois méthodes ont été proposé :
 - La méthode de rolling_statistical : Il s’agit de completer les valeurs via un 'SMA' : Simple Moving Average, 'WMA' : Weighted Moving Average ou 'EMA' : Exponential Moving Average
 - Methode KNNImputer: c’est un algorithme de remplacement de valeurs manquantes basé sur la méthode k plus proches voisins. Il utilise les valeurs des k observations les plus proches pour imputer une valeur manquante dans une colonne donnée. 
 - interpolation lineaire : une méthode utilisée pour compléter les valeurs manquantes dans une série chronologique en utilisant une ligne droite pour interpoler les valeurs manquantes entre les valeurs connues.
@@ -43,7 +44,7 @@ Le script  **HandlingMissingvalues** permet de faire ce traitement.
 ### Methane emissions prediction:
 Pour la prediction des 10 derniers années: le fichier csv **world_methane_emission_10y** contient les informations sur l'emission des 10 dernieres années. il a été calculé en specifiant dans la requete mrv= 10. 
 
-En ce qui concerne la prediction sur les 5 prochaines années. les données de world bank ne me permet pas de predire avec des modèles de ML correctement l'emission de méthane pour chaque pays.
+En ce qui concerne la prediction sur les 5 prochaines années. les données de world bank ne me permettent pas de predire avec des modèles de ML correctement l'emission de méthane pour chaque pays.
 
 Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines émissions.
 
