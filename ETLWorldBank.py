@@ -13,6 +13,10 @@ def load_code_countries(code_csv_file):
 	df['Alpha-3 code'] = df['Alpha-3 code'].str.strip()
 	return df
 
+def column_as_float(df, col):
+	df[col]= df[col].astype(float)
+	return df[col]
+
 df_code = load_code_countries(CODE_CSV_FILE)
 
 CODE_LIST = list(df_code['Alpha-3 code'].unique())
@@ -88,15 +92,19 @@ world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year'] )
 
 print('format year done.....')
 
-world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']
-world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['GDP($)']
-world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']
-world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']
+for col in ['GlobalMethane(ktco2)', 'LandArea(count)', 'GDP($)', 'Population', 'Population density' ] :
+	world_methane_emission[col] = column_as_float(world_methane_emission, col)
+
+world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']*10e6
+world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['GDP($)']*10e6
+world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']*10e6
+world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']*10e6
 
 print('start writing to csv.....')
 world_methane_emission.to_csv('data_csv/world_methane_emission.csv')
 print(' writing to csv done .....')
 
+world_methane_emission = pd.read_csv('data_csv/world_methane_emission.csv')
 
 print(' start compute score country by year .....')
 # Ajout de la colonne first_note pour la notation d'un payes par année (un classement)
@@ -110,8 +118,7 @@ print(' start feature selection .....')
 
 #selection des features en fonctions des resultats de la correlation avec les valeurs d emission du methane
 predictors = ['GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)', 
-'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 
-'note_year', 'meth_valuebylandaera', 'Emissions intensity',
+'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport',  'meth_valuebylandaera', 'Emissions intensity',
  'Per capita emissions', 'Per capita density emissions']
 # predictors = ['GlobalMethane(ktco2)', 'CO2Emission(kt)', 'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 'note_year']
 feature_selected = ['economy', 'year'] + predictors
