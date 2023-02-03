@@ -63,11 +63,10 @@ Les émissions par habitant : Il suffit de diviser les émissions totales par la
 
 Intensité des émissions : Cela mesure les émissions par unité de produit intérieur brut (PIB), ce qui donne une idée des émissions produites par unité d'activité économique.
 
-On retient la méthode par superficie.
 
 Grace a la méthode min max scaler, on réduit l’échelle sur une plage de 0 à 4.
 
-Pour affiner le score on fait unscore interne basé sur un cluster de pays. on utilise pour cela la methode de clustering en ML K-Means pour regrouper sur une année donnée les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier.
+Pour affiner le score d'un pays on fait aussi un score interne basé sur un cluster de pays. on utilise pour cela la methode de clustering en ML K-Means pour regrouper sur une année donnée les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier.
 
 
 Les scripts   **ETLWorldBank.py** et **ComputeScoreKmeans** permettent de faire ce traitement. 
