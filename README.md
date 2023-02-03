@@ -1,5 +1,7 @@
 # WorldBankProject
 
+![Cartographie emission methane](/images/cartographie_emission_methane.PNG "Cartographie Methane emission")
+
 ## Plan
 
 ### Data retrieval
