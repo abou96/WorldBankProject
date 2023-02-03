@@ -12,15 +12,6 @@ from tools import HandlingFormatDateIndex
 
 from HandlingMissingvalues import rolling_statistical, compute_uncertainty
 
-QUERY_ID = ['EN.ATM.METH.EG.KT.CE']
-
-FEATURES = ['EN.ATM.METH.EG.ZS','EN.ATM.METH.ZG', 
-            'EN.ATM.METH.AG.ZS', 'EN.ATM.METH.AG.KT.CE',
-           'NY.GDP.PCAP.CD', 'IS.AIR.DPRT', 'EG.USE.ELEC.KH.PC', 'AG.LND.TOTL.K2', 
-            'EN.ATM.METH.AG.KT.CE', 'EN.ATM.METH.AG.ZS','EN.ATM.METH.EG.KT.CE', 'EN.ATM.METH.EG.ZS', 
-            'EN.ATM.METH.KT.CE', 'EN.ATM.METH.ZG', 'EG.ELC.NGAS.ZS', 'EG.FEC.RNEW.ZS', 'EG.USE.COMM.FO.ZS',
-            'EN.ATM.CO2E.KT', 'EG.USE.PCAP.KG.OE', 'EG.USE.CRNW.ZS'
-           ]
 
 def is_missing(df, year):
 	ismiss = df.loc[df['year'] == year, 'GlobalMethane(ktco2)'].values[0]

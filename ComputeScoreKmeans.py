@@ -25,7 +25,6 @@ def kmeans_score(CountryAlphaCode, year, df):
 	df = df[df['year'] == min(float(year), CURRENT_YEAR_AVAILABLE)]
 	df = df.dropna(subset=df.columns)
 	df = df.reset_index()
-	print(df)
 	data = df[PREDICTORS].copy()
 
 	#normalization

@@ -61,7 +61,6 @@ def replace_random_values(df, fraction):
 	for column in df.columns:
 
 	    df_train = df.copy()
-	    print(np.random.rand(len(df_train)))
 	    mask = np.random.rand(len(df_train)) < fraction
 	    if mask[0] == True:
 	        mask[0] = False
