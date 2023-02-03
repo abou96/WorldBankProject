@@ -19,7 +19,8 @@ Ce projet commence par un script **ETLWorldBank.py** qui permet de récupérer l
 * EG.FEC.RNEW.ZS Renewable energy consumption (% of total final energy consumption)
 * EG.USE.COMM.FO.ZS Fossil fuel energy consumption (% of total)
 * 'SP.POP.TOTL' Population
-* 'EN.POP.DNST'
+* 'EN.POP.DNST' : represent population density, which refers to the number of people per unit of land area.
+* 'NY.GDP.MKTP.CD': Gross Domestic Product (GDP) in current US dollars.
 
 le module utilisé pour récupérer les données de WorldBankAPI s'appelle WBGAPI. Il fournit un accès moderne et pythonique à l'API de données de la Banque mondiale. Il est conçu à la fois pour les débutants en données et les types de scientifiques des données.
 
@@ -51,14 +52,18 @@ Une tentative d'utilisation d'un modele de regression lineaire a été. l'idée 
 
 ### Scoring methodology:
 
-Pour évaluer un pays en fonction de ses émissions de méthane, trois méthodes ont été testé :
+Pour évaluer un pays en fonction de ses émissions de méthane, quatres méthodes ont été testé :
 
 Les émissions totales de méthane : On peut calculer la quantité totale de méthane émise par un pays pour en faire la base de l'évaluation.
+
+les émissions par superficie : Il suffit de diviser les émissions totales par la superficie du pays
+
 Les émissions par habitant : Il suffit de diviser les émissions totales par la population pour obtenir les émissions par habitant, ce qui peut donner une meilleure idée de la responsabilité individuelle pour les émissions.
 
 Intensité des émissions : Cela mesure les émissions par unité de produit intérieur brut (PIB), ce qui donne une idée des émissions produites par unité d'activité économique.
 
-On retient les méthodes ...
+On retient la méthode par superficie.
+
 Grace a la méthode min max scaler, on réduit l’échelle sur une plage de 0 à 4.
 
 Pour affiner le score on calcul ces memes indicateurs mais cette fois ci sur des clusters. on utilise pour cela la methode de clustering en ML pour regrouper sur une année donnée les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier.
