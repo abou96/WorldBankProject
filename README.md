@@ -22,9 +22,9 @@ Ce projet commence par un script **ETLWorldBank.py** qui permet de récupérer l
 * 'EN.POP.DNST' : represent population density, which refers to the number of people per unit of land area.
 * 'NY.GDP.MKTP.CD': Gross Domestic Product (GDP) in current US dollars.
 
-le module utilisé pour récupérer les données de WorldBankAPI s'appelle WBGAPI. Il fournit un accès moderne et pythonique à l'API de données de la Banque mondiale. Il est conçu à la fois pour les débutants en données et les types de scientifiques des données.
+le module utilisé pour récupérer les données de WorldBankAPI s'appelle WBGAPI. Il fournit un accès moderne et pythonique à l'API de données de la Banque mondiale. Il est conçu à la fois pour les débutants en données et les plus experimentés.
 
-Ensuite ces données sont complétés par une premiere notation annuelle des pays en fonction de leur emission rapporté a leur superficie. Le choix de ce ratio permet de noté chaque pays en fonction de ces caractéristiques propres. (Land area)
+Ensuite ces données sont complétés par une premiere notation annuelle des pays.
 
 ### Data estimation:
 
