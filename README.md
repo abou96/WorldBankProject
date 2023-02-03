@@ -47,7 +47,7 @@ En ce qui concerne la prediction sur les 5 prochaines années. les données de w
 
 Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines emissions.
 
-Une tentative d'utilisation d'un modele de regression lineaire a été. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec données pour prédire celles la valeur d'emission de méthanes.
+Une tentative d'utilisation d'un modele de regression lineaire a été effectué. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec des données pour prédire celles la valeur d'emission de méthanes.
 
 
 ### Scoring methodology:
