@@ -45,9 +45,9 @@ def compute_score(df, group, col = 'GlobalMethane(ktco2)'):
 	dfgrouped = dfgrouped.rename(columns={col: 'min_meth'})
 	df = df.merge(dfgrouped, on=[group], how='left')
 	# scale the score between 0 to 4 by using min=max scaler method
-	df[f'note_{group}']= np.where(df[col].notnull(), 
+	df[f'note_year_{col}']= np.where(df[col].notnull(), 
 	                          4*(df[col] - df['min_meth'])/
-	                          (df['max_meth'] - df['min_meth']), -1)
+	                          (df['max_meth'] - df['min_meth']), np.nan)
 	del df['max_meth']
 	del df['min_meth']
 	return df

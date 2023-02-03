@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query
-from ComputeInfoMethaneEmission import CountryEmission
+from computeInfoMethaneEmission import CountryEmission
 
 app = FastAPI()
 
