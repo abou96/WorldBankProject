@@ -19,6 +19,7 @@ Ce projet commence par un script **ETLWorldBank.py** qui permet de récupérer l
 * EG.FEC.RNEW.ZS Renewable energy consumption (% of total final energy consumption)
 * EG.USE.COMM.FO.ZS Fossil fuel energy consumption (% of total)
 * 'SP.POP.TOTL' Population
+* 'EN.POP.DNST'
 
 le module utilisé pour récupérer les données de WorldBankAPI s'appelle WBGAPI. Il fournit un accès moderne et pythonique à l'API de données de la Banque mondiale. Il est conçu à la fois pour les débutants en données et les types de scientifiques des données.
 
