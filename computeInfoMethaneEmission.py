@@ -34,7 +34,7 @@ class CountryEmission :
     	dico['iso_alpha2'] = CountryAlpha2Code
     	dico['is_estimated'] = False
 
-    	df_all_country = pd.read_csv('world_methane_emission_with_notebyyear.csv', index_col=False)
+    	df_all_country = pd.read_csv('data_csv/world_methane_emission_with_notebyyear.csv', index_col=False)
     	
     	df_country = df_all_country[df_all_country['economy'] == CountryAlpha3Code]
     	

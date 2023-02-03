@@ -5,7 +5,7 @@ import itertools
 import numpy as np
 from tools import compute_score
 
-CODE_CSV_FILE = 'countries_codes.csv'
+CODE_CSV_FILE = 'data_csv/countries_codes.csv'
 
 def load_code_countries(code_csv_file):
 	df = pd.read_csv(code_csv_file, sep=';')
@@ -54,7 +54,7 @@ FEATURES = [
 	'EN.ATM.METH.AG.ZS','EN.ATM.METH.EG.KT.CE','EN.ATM.METH.EG.ZS', 
 	'EN.ATM.METH.KT.CE', 'EN.ATM.METH.ZG', 'EG.ELC.NGAS.ZS', 'EG.FEC.RNEW.ZS', 
 	'EG.USE.COMM.FO.ZS','EN.ATM.CO2E.KT', 'EG.USE.PCAP.KG.OE', 'EG.USE.CRNW.ZS', 'NY.GDP.MKTP.CD',
-	'SP.POP.TOTL']
+	'SP.POP.TOTL', 'EN.POP.DNST']
 
 # features = ['EN.ATM.METH.KT.CE']
 print('starting request')
@@ -94,7 +94,7 @@ world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalM
 world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']
 
 print('start writing to csv.....')
-world_methane_emission.to_csv('world_methane_emission.csv')
+world_methane_emission.to_csv('data_csv/world_methane_emission.csv')
 print(' writing to csv done .....')
 
 

@@ -37,9 +37,7 @@ def compute_score(df, group, col = 'GlobalMethane(ktco2)'):
 	#compute max value methan emission by group
 	dfgrouped = pd.DataFrame(df.groupby(group)[col].max()).reset_index()
 	dfgrouped = dfgrouped.rename(columns={col: 'max_meth'})
-	print('max', dfgrouped)
 	df = df.merge(dfgrouped, on=[group], how='left')
-	print('max', dfgrouped)
 	#compute min value methan emission by group
 	dfgrouped = pd.DataFrame(df.groupby(group)[col].min()).reset_index()
 	dfgrouped = dfgrouped.rename(columns={col: 'min_meth'})
