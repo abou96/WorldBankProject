@@ -37,15 +37,15 @@ Le script  **HandlingMissingvalues** permet d'appliquer ces méthodes.
 
 ### Uncertainty computation :
 
-Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs nulles de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenu. Cette simulation est repetté plusieurs fois et au final l’incertitude est determiné par l’ecart-type de ces erreurs.
+Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs nulles de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenue. Cette simulation est répété plusieurs fois et au final l’incertitude est determinée par l’ecart-type de ces erreurs.
 Le script  **HandlingMissingvalues** permet de faire ce traitement. 
 
 ### Methane emissions prediction:
-Pour la prediction des 10 derniers années: le fichier csv **world_methane_emission_10y** contient les informations sur l'emission des 10 dernieres années. il a été calculer en specifiant dans la requete mrv= 10. 
+Pour la prediction des 10 derniers années: le fichier csv **world_methane_emission_10y** contient les informations sur l'emission des 10 dernieres années. il a été calculé en specifiant dans la requete mrv= 10. 
 
 En ce qui concerne la prediction sur les 5 prochaines années. les données de world bank ne me permet pas de predire avec des modèles de ML correctement l'emission de méthane pour chaque pays.
 
-Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines emissions.
+Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines émissions.
 
 Une tentative d'utilisation d'un modele de regression lineaire a été effectué. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec des données pour prédire celles la valeur d'emission de méthanes.
 
@@ -66,15 +66,13 @@ On retient la méthode par superficie.
 
 Grace a la méthode min max scaler, on réduit l’échelle sur une plage de 0 à 4.
 
-Pour affiner le score on calcul ces memes indicateurs mais cette fois ci sur des clusters. on utilise pour cela la methode de clustering en ML pour regrouper sur une année donnée les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier.
-
-Au final en se retrouve 
+Pour affiner le score on fait unscore interne basé sur un cluster de pays. on utilise pour cela la methode de clustering en ML K-Means pour regrouper sur une année donnée les pays ayant les memes caractéristiques d’emission et ensuite d’établir un score sur ce groupe en particulier.
 
 
 Les scripts   **ETLWorldBank.py** et **ComputeScoreKmeans** permettent de faire ce traitement. 
 ### REST API:
 
-Une fois les données complet, un restapi a été crée avec FastApi qui prend en entrée le code alpha2 et l’année et retourne :
+Une fois les données complet, un restapi a été créé avec FastApi qui prend en entrée le code alpha2 et l’année et retourne :
 
 - La valeur des émissions de méthane du pays défini à une année spécifique (nombre flottant),
 - La connaissance si la valeur est mesurée ou estimée (booléen),
