@@ -4,6 +4,12 @@ import warnings
 import itertools
 import numpy as np
 from tools import compute_score
+import logging as _log
+
+_log.basicConfig(filename='ETL_WorldBank.log', level=_log.INFO, 
+					format='%(asctime)s - %(message)s', datefmt ='%d-%m-%y %H:%M:%S')
+
+
 
 CODE_CSV_FILE = 'data_csv/countries_codes.csv'
 
@@ -17,6 +23,7 @@ def column_as_float(df, col):
 	df[col]= df[col].astype(float)
 	return df[col]
 
+_log.info('load country code.....')
 df_code = load_code_countries(CODE_CSV_FILE)
 
 CODE_LIST = list(df_code['Alpha-3 code'].unique())
@@ -61,12 +68,14 @@ FEATURES = [
 	'SP.POP.TOTL', 'EN.POP.DNST']
 
 # features = ['EN.ATM.METH.KT.CE']
-print('starting request')
+_log.info('starting request....')
 world_methane_emission = wb.data.DataFrame(FEATURES, CODE_LIST , columns = 'series').reset_index()
 
-print('request done !!!')
 
-print('start change columns.....')
+_log.info('request done !!!')
+
+_log.info('start change columns.....')
+
 columns_rename_list = [
 		DICO_GLOBAL_METHANE, DICO_ENERGY, DICO_ENERGY_RELATED, 
 		DICO_AGRICULTURE_METHANE, DICO_AGRICULTURE_RELATED
@@ -83,54 +92,56 @@ dico_final.update({'EN.POP.DNST':'Population density'})
 
 world_methane_emission = world_methane_emission.rename(columns = dico_final)
 
-print('change columns done.....')
 
+_log.info('change columns done.....')
 
-print('start format year.....')
+_log.info('start format year.....')
+
 world_methane_emission['year'] = world_methane_emission['year'].str[2:]
 world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year'] ).dt.year
 
-print('format year done.....')
+_log.info('format year done.....')
 
 for col in ['GlobalMethane(ktco2)', 'LandArea(count)', 'GDP($)', 'Population', 'Population density' ] :
 	world_methane_emission[col] = column_as_float(world_methane_emission, col)
 
-world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']*10e6
-world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['GDP($)']*10e6
-world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']*10e6
-world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']*10e6
+world_methane_emission['meth_valuebylandaera'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['LandArea(count)']
+world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['GDP($)']
+world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']
+world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']
 
-print('start writing to csv.....')
-world_methane_emission.to_csv('data_csv/world_methane_emission.csv')
-print(' writing to csv done .....')
+_log.info('start writing to csv.....')
 
-world_methane_emission = pd.read_csv('data_csv/world_methane_emission.csv')
+world_methane_emission.to_excel('data_csv/world_methane_emission.xlsx')
 
-print(' start compute score country by year .....')
-# Ajout de la colonne first_note pour la notation d'un payes par année (un classement)
-world_methane_emission = compute_score(world_methane_emission, 'year', 'meth_valuebylandaera')
-world_methane_emission = compute_score(world_methane_emission, 'year', 'Emissions intensity')
-world_methane_emission = compute_score(world_methane_emission, 'year', 'Per capita emissions')
-world_methane_emission = compute_score(world_methane_emission, 'year', 'Per capita density emissions')
-print(' end compute score country by year .....')
+_log.info('writing to csv done .....')
 
-print(' start feature selection .....')
+_log.info('start compute score country by year .....')
+
+# Ajout des colonnes note_year_{cols} pour la notation d'un payes par année (un classement)
+score_list = []
+for col in ['meth_valuebylandaera', 'Emissions intensity', 'Per capita emissions', 'Per capita density emissions']:
+	world_methane_emission, note_col = compute_score(world_methane_emission, 'year', col)
+	score_list.append(note_col)
+
+_log.info(' end compute score country by year .....')
+
+_log.info(' start feature selection .....')
 
 #selection des features en fonctions des resultats de la correlation avec les valeurs d emission du methane
-predictors = ['GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)', 
+columns = ['economy', 'year', 'GlobalMethane(ktco2)', 'LandArea(count)', 'CO2Emission(kt)', 
 'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport',  'meth_valuebylandaera', 'Emissions intensity',
- 'Per capita emissions', 'Per capita density emissions']
-# predictors = ['GlobalMethane(ktco2)', 'CO2Emission(kt)', 'AgricultureMethane(ktco2)','EnergieMethane(ktco2)', 'AirTransport', 'note_year']
-feature_selected = ['economy', 'year'] + predictors
+ 'Per capita emissions', 'Per capita density emissions'] + score_list
 
-world_methane_emission = world_methane_emission[feature_selected]
 
-print(' end feature selection .....')
+world_methane_emission = world_methane_emission[columns]
 
-print('start final writing to csv.....')
-world_methane_emission.to_csv('world_methane_emission_with_notebyyear.csv')
-print('end final writing to csv.....')
+_log.info(' end feature selection .....')
 
-print('done ETL.....')
+_log.info('start final writing to csv.....')
+world_methane_emission.to_excel('data_csv/world_methane_emission_with_notebyyear.xlsx')
+_log.info('end final writing to csv.....')
+
+_log.info('done ETL.....')
 
 
