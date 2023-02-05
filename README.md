@@ -38,7 +38,7 @@ Le script  **HandlingMissingvalues** permet d'appliquer ces méthodes.
 
 ### Uncertainty computation :
 
-Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs nulles de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenue. Cette simulation est répété plusieurs fois et au final l’incertitude est determinée par l’ecart-type de ces erreurs.
+Afin de calculer l’incertitude de l’estimation des valeurs manquantes. La méthode de bootstrapping a été utilisé: il consiste a simuler des valeurs manquantes de manière aléatoire, puis d’estimer ces valeurs et enfin de calculer l’erreur obtenue. Cette simulation est répété plusieurs fois et au final l’incertitude est determinée par l’ecart-type de ces erreurs.
 Le script  **HandlingMissingvalues** permet de faire ce traitement. 
 
 ### Methane emissions prediction:
@@ -48,7 +48,7 @@ En ce qui concerne la prediction sur les 5 prochaines années. les données de w
 
 Néanmoins en se basant sur les methodes de lissage on peut faire des prévisions sur les prochaines émissions.
 
-Une tentative d'utilisation d'un modele de regression lineaire a été effectué. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec des données pour prédire celles la valeur d'emission de méthanes.
+Une tentative d'utilisation d'un modele de regression lineaire a été effectué. l'idée étant de formuler dans un premier temps Les données de séries chronologiques comme une apprentissage supervisé (methode de sliding windows). Puis d'appliquer des méthodes de ML voir le notebook (**predict_methane_emission**). Cependant au niveau de la prediction il n y a pas suffisamment de features avec des données pour prédire la valeur d'emission de méthanes.
 
 
 ### Scoring methodology:
