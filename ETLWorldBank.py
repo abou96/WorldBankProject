@@ -11,7 +11,7 @@ _log.basicConfig(filename='ETL_WorldBank.log', level=_log.INFO,
 
 
 
-CODE_CSV_FILE = 'data_csv/countries_codes.csv'
+CODE_CSV_FILE = 'data/countries_codes.csv'
 
 def load_code_countries(code_csv_file):
 	df = pd.read_csv(code_csv_file, sep=';')
@@ -92,13 +92,12 @@ dico_final.update({'EN.POP.DNST':'Population density'})
 
 world_methane_emission = world_methane_emission.rename(columns = dico_final)
 
-
 _log.info('change columns done.....')
 
 _log.info('start format year.....')
 
 world_methane_emission['year'] = world_methane_emission['year'].str[2:]
-world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year'] ).dt.year
+world_methane_emission['year'] = pd.to_datetime(world_methane_emission['year']).dt.year
 
 _log.info('format year done.....')
 
@@ -110,17 +109,17 @@ world_methane_emission['Emissions intensity'] = world_methane_emission['GlobalMe
 world_methane_emission['Per capita emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population']
 world_methane_emission['Per capita density emissions'] = world_methane_emission['GlobalMethane(ktco2)'] / world_methane_emission['Population density']
 
-_log.info('start writing to csv.....')
+_log.info('start writing to excel.....')
 
-world_methane_emission.to_excel('data_csv/world_methane_emission.xlsx')
+world_methane_emission.to_excel('data/world_methane_emission.xlsx')
 
-_log.info('writing to csv done .....')
+_log.info('writing to excel done .....')
 
 _log.info('start compute score country by year .....')
 
 # Ajout des colonnes note_year_{cols} pour la notation d'un payes par année (un classement)
 score_list = []
-for col in ['meth_valuebylandaera', 'Emissions intensity', 'Per capita emissions', 'Per capita density emissions']:
+for col in ['GlobalMethane(ktco2)', 'meth_valuebylandaera', 'Emissions intensity', 'Per capita emissions', 'Per capita density emissions']:
 	world_methane_emission, note_col = compute_score(world_methane_emission, 'year', col)
 	score_list.append(note_col)
 
@@ -138,9 +137,9 @@ world_methane_emission = world_methane_emission[columns]
 
 _log.info(' end feature selection .....')
 
-_log.info('start final writing to csv.....')
-world_methane_emission.to_excel('data_csv/world_methane_emission_with_notebyyear.xlsx')
-_log.info('end final writing to csv.....')
+_log.info('start final writing to excel.....')
+world_methane_emission.to_excel('data/world_methane_emission_with_notebyyear.xlsx')
+_log.info('end final writing to excel.....')
 
 _log.info('done ETL.....')
 

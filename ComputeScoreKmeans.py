@@ -23,7 +23,7 @@ CURRENT_YEAR_AVAILABLE = 2019
 
 
 def kmeans_score(CountryAlphaCode, year, df, feature_score):
-	#feature_score is the 
+	 
 	if type(year) != int :
 		raise Exception('the year should be numerical value')
 
@@ -39,18 +39,7 @@ def kmeans_score(CountryAlphaCode, year, df, feature_score):
 	labels = kmeans.labels_
 	labels = pd.DataFrame(labels, columns = ['labels'])
 	df = df.merge(labels, left_index=True, right_index=True)
-	df, mean_feature_score = compute_score(df, 'labels', feature_score)
-	avg_by_cluster = df.groupby(['labels'], as_index=False).agg(
-                      {'GlobalMethane(ktco2)':['mean','std'], mean_feature_score :['mean']})
-	print(avg_by_cluster)
-	avg_by_cluster.columns = ['labels'] + ['_'.join(col) for col in avg_by_cluster.columns.values[1:]]
-	avg_by_cluster = avg_by_cluster.rename(columns={'GlobalMethane(ktco2)_mean' : 'Methane_emission_estimated',
-                               'GlobalMethane(ktco2)_std': 'uncertainty',
-                               f'{mean_feature_score}_mean': 'score_cluster'})
-
-
-	df = df.merge(avg_by_cluster, how='left', on='labels')
-
+	df, _ = compute_score(df, 'labels', feature_score)
 
 	return df
 

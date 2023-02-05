@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error
 from tools import replace_random_values
-
+from sklearn.impute import KNNImputer
 import random
 
 
