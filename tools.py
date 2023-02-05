@@ -36,19 +36,22 @@ def compute_score(df, group, col = 'GlobalMethane(ktco2)'):
 	'''
 	#compute max value methan emission by group
 	dfgrouped = pd.DataFrame(df.groupby(group)[col].max()).reset_index()
-	dfgrouped = dfgrouped.rename(columns={col: 'max_meth'})
+	dfgrouped = dfgrouped.rename(columns={col: f'max_{col}'})
 	df = df.merge(dfgrouped, on=[group], how='left')
 	#compute min value methan emission by group
 	dfgrouped = pd.DataFrame(df.groupby(group)[col].min()).reset_index()
-	dfgrouped = dfgrouped.rename(columns={col: 'min_meth'})
+	dfgrouped = dfgrouped.rename(columns={col: f'min_{col}'})
 	df = df.merge(dfgrouped, on=[group], how='left')
 	# scale the score between 0 to 4 by using min=max scaler method
-	df[f'note_year_{col}']= np.where(df[col].notnull(), 
-	                          4*(df[col] - df['min_meth'])/
-	                          (df['max_meth'] - df['min_meth']), np.nan)
-	del df['max_meth']
-	del df['min_meth']
-	return df
+	new_col = f'note_year_{col}'
+	df[new_col]= np.where(df[col].notnull(), 
+	                          4*(df[col] - df[f'min_{col}'])/
+	                          (df[f'max_{col}'] - df[f'min_{col}']), np.nan)
+	print('hhhhhhhhhh', df[new_col])
+	del df[f'max_{col}']
+	del df[f'min_{col}']
+
+	return df, new_col
 
 def replace_random_values(df, fraction):
 
