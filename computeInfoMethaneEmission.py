@@ -38,7 +38,7 @@ class CountryEmission :
 		dico['is_estimated'] = False
 
 		_log.info('loading data of methane emission')
-		df_all_country = pd.read_excel('data_csv/world_methane_emission_with_notebyyear.xlsx', index_col=False)
+		df_all_country = pd.read_excel('data/world_methane_emission_with_notebyyear.xlsx', index_col=False)
 		
 		df_country = df_all_country[df_all_country['economy'] == CountryAlpha3Code]
 		
@@ -66,15 +66,19 @@ class CountryEmission :
 										order = 1, windows_size = 4, k=3)
 
 		#all scores using each methods
-		columns = ['meth_valuebylandaera', 'Emissions intensity', 'Per capita emissions', 'Per capita density emissions']
-		scores_col_list= [f'note_year_{col}' for col in columns]
+		methods_col = ['GlobalMethane(ktco2)', 'Emissions intensity', 'Per capita emissions',
+		 				'Per capita density emissions', 'meth_valuebylandaera']
+		
+		yearly_scores = [f'note_year_{col}' for col in methods_col]
+		label_scores= [f'note_labels_{col}' for col in methods_col]
 
+		col_index = 1 #help me change the methods easly
 		_log.info('starting compute score using clustering')
-		print(columns[0])
-		df_score = kmeans_score(CountryAlpha3Code, year, df_all_country, columns[1])
-		#note by year using meth_valuebylandaera chosen
-		dico['score_annuel'] = df_score.loc[df_score['economy']== CountryAlpha3Code, scores_col_list[1]].values[0]
-		dico['score_cluster'] = df_score.loc[df_score['economy']== CountryAlpha3Code, 'score_cluster'].values[0]
+		_log.info('Methods: %s', methods_col[col_index])
+		df_score = kmeans_score(CountryAlpha3Code, year, df_all_country, methods_col[col_index])
+		#note by year 
+		dico['score_annuel'] = df_score.loc[df_score['economy']== CountryAlpha3Code, yearly_scores[col_index]].values[0]
+		dico['score_cluster'] = df_score.loc[df_score['economy']== CountryAlpha3Code, label_scores[col_index]].values[0]
 		
 		return dico
 
